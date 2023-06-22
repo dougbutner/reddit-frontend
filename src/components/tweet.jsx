@@ -77,13 +77,13 @@ const Tweet = ({ blur, src, width, title, theme, id, ...props }) => {
       !$iframe.current.contentWindow.twttr
     )
       return;
-
+  
     const doc = $iframe.current.contentDocument;
     const twitter = $iframe.current.contentWindow.twttr;
     const tweet = $iframe.current.contentDocument.getElementById("tweet");
-
+  
     doc.body.style.margin = 0;
-
+  
     if (twitter) {
       twitter.ready(() => {
         twitter.widgets
@@ -92,17 +92,20 @@ const Tweet = ({ blur, src, width, title, theme, id, ...props }) => {
             theme: theme.dark ? "dark" : "light",
           })
           .then((newTweet) => {
-            newTweet.style.marginTop = 0;
-            newTweet.style.marginBottom = 0;
-            const style = doc.createElement("style");
-            style.type = "text/css";
-            style.innerText = shadowStyle;
-            newTweet.shadowRoot.append(style);
-            $iframe.current.height = newTweet.clientHeight;
+            if (newTweet && newTweet.shadowRoot) {
+              newTweet.style.marginTop = 0;
+              newTweet.style.marginBottom = 0;
+              const style = doc.createElement("style");
+              style.type = "text/css";
+              style.innerText = shadowStyle;
+              newTweet.shadowRoot.append(style);
+              $iframe.current.height = newTweet.clientHeight;
+            }
           });
       });
     }
   }
+  
 
   useEffect(() => {
     if (!$iframe.current || !$iframe.current.contentDocument) return;

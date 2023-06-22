@@ -28,12 +28,12 @@ const BasicNavigation = ({ location: { name = "" } = {}, inList }) => {
     //   description: "View your subscriptions",
     //   to: "/subscriptions/",
     // },
-    // {
-    //   label: "Search",
-    //   icon: "search",
-    //   description: "Search for communities, posts, etc",
-    //   to: "/search",
-    // },
+    {
+       label: "Search",
+       icon: "search",
+       description: "Search for communities, posts, etc",
+       to: "/search",
+     },
   ];
 
   if (process.env.NODE_ENV === "development")

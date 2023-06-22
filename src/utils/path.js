@@ -12,7 +12,7 @@ export default ({ subreddit, username, sort, time, type, query }) => {
   // times only when sort === "top" or "controversial"
   const times = ["hour", "day", "week", "month", "year", "all"];
 
-  // types only on user page
+  // types only on user page 
   const types = [
     "overview",
     "posts",

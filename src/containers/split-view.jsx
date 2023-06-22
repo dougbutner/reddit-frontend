@@ -69,27 +69,36 @@ const SplitView = ({
 
   useEffect(() => {
     if (path.subName && subreddits[path.subName.toLowerCase()] === undefined) {
-      r.getSubreddit(path.subName)
-        .refresh()
-        .then((subreddit) => {
+      const subreddit = r.getSubreddit(path.subName);
+      
+      if (!subreddit) {
+        console.error(`Subreddit ${path.subName} does not exist`);
+        return;
+      }
+
+      subreddit.refresh()
+        .then((refreshedSubreddit) => {
           // Stores subreddit info.
-          addSubreddit(subreddit);
+          addSubreddit(refreshedSubreddit);
 
           // Generate a new subredditTheme if there isn't one, or if
           // the subreddit has updated their primary_color. Additionally,
           // we set the theme to null if they don't have one ("")
           const subTheme =
-            themesBySubreddit?.[subreddit?.display_name.toLowerCase()] || false;
+            themesBySubreddit?.[refreshedSubreddit?.display_name.toLowerCase()] || false;
           if (
-            (subTheme && subreddit.primary_color !== "") ||
-            subTheme.color !== subreddit.primary_color
+            (subTheme && refreshedSubreddit.primary_color !== "") ||
+            subTheme.color !== refreshedSubreddit.primary_color
           )
             genTheme({
-              color: subreddit.primary_color,
-              name: subreddit.display_name,
+              color: refreshedSubreddit.primary_color,
+              name: refreshedSubreddit.display_name,
             }).then((themes) =>
-              addSubredditTheme(subreddit.display_name, themes)
+              addSubredditTheme(refreshedSubreddit.display_name, themes)
             );
+        })
+        .catch(error => {
+          console.error(`Error refreshing subreddit ${path.subName}: `, error);
         });
     }
   }, [
@@ -100,6 +109,7 @@ const SplitView = ({
     addSubredditTheme,
     themesBySubreddit,
   ]);
+
 
   // const toggleListing = () => {
   //   setPaths((p) => ({
